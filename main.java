@@ -16,35 +16,34 @@ class Recipe implements Serializable {
         this.instructions = instructions;
     }
     public void recipeRetrieval(){}
-    public void addRecipe(){
-        Scanner input_recipe= new Scanner(System.in);
-        System.out.println("Enter the name of your recipe:");
-        this.name=input_recipe.nextLine();
-        System.out.println("\nEnter the description of your recipe:");
-        this.description=input_recipe.nextLine();
-        /*
-        System.out.println("\nEnter the number of ingredients you would like to add");
-        Problem to solve, input with Int causing bug with counter
-        int num_ingredients=input_recipe.nextInt();*/
-        int counter=0;
-        while(counter < 3){
-            System.out.println("\nAdd ingredient number:" + (counter+1));
-            String ing_str=input_recipe.nextLine();
-            this.ingredients.add(ing_str);
-            counter++;
-        }
-        counter = 0;
-        /*
-         System.out.println("Enter the number of instructions you would like to add");
-         int num_instructions = input_recipe.nextInt();
-         */
-        while(counter < 3){
-        	System.out.println("\nAdd instruction number:" + (counter+1));
-            String instr_str=input_recipe.nextLine();
-            this.instructions.add(instr_str);
-            counter++;
-        }
-    }
+	public void addRecipe() {
+		Scanner input_recipe = new Scanner(System.in);
+		System.out.println("\nEnter the name of your recipe:");
+		this.name = input_recipe.nextLine();
+		System.out.println("\nEnter the description of your recipe:");
+		this.description = input_recipe.nextLine();
+		System.out.println("\nEnter the number of ingredients you would like to add");
+		// number of ingredients bug updated
+		int num_ingredients = Integer.parseInt(input_recipe.nextLine());
+		int counter = 0;
+		while (counter < num_ingredients) {
+			System.out.println("Add ingredient number:" + (counter + 1));
+			String ing_str = input_recipe.nextLine();
+			this.ingredients.add(ing_str);
+			counter++;
+		}
+		// same structure applied to number of instructions
+		System.out.println("\nEnter the number of instructions you would like to add");
+		int num_instructions = Integer.parseInt(input_recipe.nextLine());
+		counter = 0;
+		while (counter < num_instructions) {
+			System.out.println("Add instruction number:" + (counter + 1));
+			String instr_str = input_recipe.nextLine();
+			this.instructions.add(instr_str);
+			counter++;
+		}
+	}
+
     
     /*
     name, description, ingredients, instructions
