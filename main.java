@@ -43,6 +43,12 @@ class Recipe {
             counter++;
         }
     }
+    public static void getHelp(){ //likely implement by having a while(s.next()) covering our entire main, and having switch cases?
+        System.out.println("Welcome to Team Gusteau's Recipe Book!\n To get help about a specific command, please type !help <command>\n Here is a list of our commands:\n search\n explore\n create\n");
+    }
+    public void getHelp(String command){
+
+    }
     
     /*
     name, description, ingredients, instructions
