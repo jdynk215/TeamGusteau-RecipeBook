@@ -1,8 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-class Recipe implements Serializable {
-	private static final long serialVersionUID = 1L;
+class Recipe {
 	String name;
 	String description;
 	ArrayList<String> ingredients;
@@ -27,6 +26,8 @@ class Recipe implements Serializable {
 		Scanner input_recipe = new Scanner(System.in);
 		System.out.println("\nEnter the name of your recipe:");
 		this.name = input_recipe.nextLine();
+		// To do: whenever we create a recipe, we have to call the read function to
+		// check if the recipe name already exists in the file.
 		System.out.println("\nEnter the description of your recipe:");
 		this.description = input_recipe.nextLine();
 		System.out.println("\nEnter the number of ingredients you would like to add");
@@ -56,32 +57,41 @@ class Recipe implements Serializable {
 		StringBuffer sb = new StringBuffer();
 
 		for (String s : this.ingredients) {
-			sb.append(s + " ");
+			sb.append(s);
+			sb.append("\n");
 		}
 		String str_ingr = sb.toString();
 		sb = new StringBuffer();
+
+		// use counter instead of indexOf() which might cause the bug
+		int counter = 1;
 		for (String x : this.instructions) {
-			sb.append((this.instructions.indexOf(x) + 1) + "." + x);
+			sb.append((counter) + "." + x);
 			sb.append("\n");
+			counter++;
 		}
 		String str_instr = sb.toString();
 
 		return "Recipe Name: " + this.name + "\n" + "Recipe Description: " + this.description + "\n"
-				+ "Recipe Ingredients: " + str_ingr + "\n" + "Recipe Instructions:\n" + str_instr;
+				+ "\nRecipe Ingredients:\n" + str_ingr + "\n" + "Recipe Instructions:\n" + str_instr;
 
 	}
 
 }
 
 public class main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
+
+		Recipe my_rec;
+		ArrayList<Recipe> menu = new ArrayList<Recipe>();
+		BufferedReader br = new BufferedReader(new FileReader("myRecipes.txt"));
+		readRecipeFile(menu, br);
+
 		System.out.println(
 				"Welcome to the Team Gusteau Recipe Application! To begin, enter a command or type HELP to see a list of commands:");
 		Scanner userInput = new Scanner(System.in);
 		String user_command;
 
-		Recipe my_rec;
-		ArrayList<Recipe> menu = new ArrayList<Recipe>();
 		while (true) {
 			user_command = userInput.nextLine();
 			if (user_command.toLowerCase().equals("create")) {
@@ -93,12 +103,31 @@ public class main {
 				System.out.println("\n" + my_rec.toString());
 				System.out.println("What would you like to do next?");
 				try {
-					FileOutputStream f = new FileOutputStream("myRecipes.txt");
-					ObjectOutputStream o = new ObjectOutputStream(f);
-					// Write objects to file
-					o.writeObject(my_rec);
-					o.close();
-					f.close();
+					BufferedWriter writer = new BufferedWriter(new FileWriter("myRecipes.txt", true));
+
+					StringBuilder sb = new StringBuilder();
+					for (String s : my_rec.ingredients) {
+						sb.append(s);
+						if (my_rec.ingredients.indexOf(s) + 1 == my_rec.ingredients.size()) {
+							break;
+						} else {
+							sb.append("#");
+						}
+					}
+
+					StringBuilder new_sb = new StringBuilder();
+					for (String x : my_rec.instructions) {
+						new_sb.append(x);
+						if (my_rec.instructions.indexOf(x) + 1 == my_rec.instructions.size()) {
+							break;
+						} else {
+							new_sb.append("#");
+						}
+
+					}
+					writer.append(my_rec.name + "_" + my_rec.description + "_" + sb.toString() + "_" + new_sb.toString()
+							+ "\n");
+					writer.close();
 
 				} catch (FileNotFoundException e) {
 					System.out.println("File not found");
@@ -123,7 +152,7 @@ public class main {
 							System.out.println("\nRecipe found!\n");
 							System.out.println(r.toString());
 
-							/* The Recipe Exploration feature goes here */
+							// The Recipe Exploration feature goes here
 							Found = true;
 
 							break;
@@ -138,7 +167,7 @@ public class main {
 					System.out.println();
 					printMenu(menu);
 
-					/* The Recipe Exploration feature goes here */
+					// The Recipe Exploration feature goes here
 
 				}
 
@@ -180,6 +209,44 @@ public class main {
 			}
 		}
 
+	}
+
+	public static void readRecipeFile(ArrayList<Recipe> menu, BufferedReader br) {
+		try {
+
+			String st;
+
+			while ((st = br.readLine()) != null) {
+				// System.out.println(st);
+				String[] splitline = st.split("_");
+//			for (int i=0;i<4;i++) {
+//				System.out.println(splitline[i]);
+//			}
+				String[] ingred = splitline[2].split("#");
+
+				String[] instruc = splitline[3].split("#");
+//				for (int i=0;i<ingred.length;i++) {
+//					System.out.println(ingred[i]);
+//				}
+				Recipe temp = new Recipe();
+				temp.name = splitline[0];
+				temp.description = splitline[1];
+
+				for (String s : ingred) {
+					temp.ingredients.add(s);
+				}
+				for (String q : instruc) {
+					temp.instructions.add(q);
+				}
+
+				menu.add(temp);
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Local menu loaded...\n");
 	}
 
 	public static void printMenu(ArrayList<Recipe> r) {
