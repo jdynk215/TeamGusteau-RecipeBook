@@ -86,16 +86,13 @@ public class main {
 		return list;
 	}
 	public static void format(String data){
-		System.out.println("hello world");
 		String[] rows = data.split("\n", 0);
 		for(String row: rows){
 			String[] cols = row.split(",", 0);
-			System.out.println(row);
+			//System.out.println(row);
 			//String name = cols[0];
 			Recipe newRecipe = new Recipe(cols[0], cols[1], arrayToList(cols[2].split("-", 0)), arrayToList(cols[3].split("-", 0)));
 			menu.add(newRecipe);
-			System.out.println(menu.size());
-			
 		}
 	}
 	public static void main(String[] args) {
@@ -155,7 +152,7 @@ public class main {
 			
 			else if (user_command.toLowerCase().equals("find")) {
 				System.out.println(
-						"\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all exsiting recipes:");
+						"\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all existing recipes:");
 				Scanner userInput1 = new Scanner(System.in);
 				String user_command1 = userInput1.nextLine();
 
@@ -181,61 +178,30 @@ public class main {
 					}
 
 				} else if (user_command1.toLowerCase().equals("2")) {
-					System.out.println(menu.size());
+					//System.out.println(menu.size());
+					System.out.println("");
 					for(int i = 0; i < menu.size(); i++){
 						System.out.println(("name: " + menu.get(i).name));
-						System.out.println(("description: " + menu.get(i).description));
+						System.out.println(("description: " + menu.get(i).description) + "\n");
 					}
 					 //The Recipe Exploration feature goes here 
 				}
-
 				System.out.println("What would you like to do next?");
-
 			}
-			
 			else if (user_command.toLowerCase().equals("read")) {
 				try{
 					File myFile = new File("myRecipes.txt");
 					Scanner myReader = new Scanner(myFile);
 					String data = "";
 					while(myReader.hasNextLine())	{
-						data += myReader.nextLine();
-						//System.out.print(data);
+						data += myReader.nextLine() + "\n";
 					}
+					System.out.println("Recipe data read into program");
 					format(data);
 				}
 				catch (FileNotFoundException e){
 				}
-
-				//try {
-					//FileInputStream fi = new FileInputStream("myRecipes.txt");
-					/*
-					ObjectInputStream oi = new ObjectInputStream(fi);
-					boolean keepReading = true;
-					try {
-						while (keepReading) {
-							Recipe read_rec = (Recipe) oi.readObject();
-							System.out.println(read_rec.toString());
-							menu.add(read_rec);
-							System.out.println("What would you like to do next?");
-
-						}
-					} catch (EOFException e) {
-						keepReading = false;
-					}
-
-					oi.close();
-					fi.close();
-
-				} catch (FileNotFoundException e) {
-					System.out.println("File not found");
-				} catch (IOException e) {
-					System.out.println("Error initializing stream");
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				*/
+				System.out.println("What would you like to do next?");
 			}
 			else if (user_command.toLowerCase().equals("exit")) {
 				System.out.println("\nGoodbye");
