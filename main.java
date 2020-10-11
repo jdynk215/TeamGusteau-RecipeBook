@@ -75,6 +75,29 @@ class Recipe implements Serializable {
 }
 
 public class main {
+
+	static ArrayList<Recipe> menu = new ArrayList<Recipe>();
+
+	public static ArrayList<String> arrayToList(String [] arr){
+		ArrayList<String> list = new ArrayList<String>();	
+		for(String s: arr){
+			list.add(s);
+		}
+		return list;
+	}
+	public static void format(String data){
+		System.out.println("hello world");
+		String[] rows = data.split("\n", 0);
+		for(String row: rows){
+			String[] cols = row.split(",", 0);
+			System.out.println(row);
+			//String name = cols[0];
+			Recipe newRecipe = new Recipe(cols[0], cols[1], arrayToList(cols[2].split("-", 0)), arrayToList(cols[3].split("-", 0)));
+			menu.add(newRecipe);
+			System.out.println(menu.size());
+			
+		}
+	}
 	public static void main(String[] args) {
 		System.out.println(
 				"Welcome to the Team Gusteau Recipe Application! To begin, enter a command or type HELP to see a list of commands:");
@@ -82,25 +105,7 @@ public class main {
 		String user_command;
 
 		Recipe my_rec;
-		ArrayList<Recipe> menu = new ArrayList<Recipe>();
-		/*Use a method to break apart the file into a recipe ArrayList, so something like: 
-									public ArrayList<Recipe> readRecipeFile(ArrayList<Recipe> menu){
-										Recipe adding_recipe;
-										//while loop
-											//Get out one line at a time (split by "line")
-											//Split the given line into a recipe (split by "+")
-											//adding_recipe.name= index 0 of split
-											//adding_recipe.description= index 1 of split
-										    //Split instructions and ingredients in given line (split index 2 and 3 by ",") into separate ArrayList<string>
-										    //some ingredient ArrayList<string>= split index 2
-										    //some ingredient ArrayList<string>= split index 3
-										    //adding_recipe.ingredients= some ingredient ArrayList<string>= split index 2
-										    //adding_recipe.instructions= some instruction ArrayList<string>= split index 3
-											//add recipe to menu
-										
-										
-									}
-		 */
+
 		while (true) {
 			user_command = userInput.nextLine();
 			if (user_command.toLowerCase().equals("create")) {
@@ -122,7 +127,7 @@ public class main {
 							break;
 						}
 						else{
-							sb.append(",");
+							sb.append("-");
 						}
 					}
 					
@@ -134,11 +139,11 @@ public class main {
 							break;
 						}
 						else{
-							new_sb.append(",");
+							new_sb.append("-");
 						}
 						
 					}
-   	 				writer.append(my_rec.name+"+"+my_rec.description+"+"+sb.toString()+"+"+new_sb.toString()+"\n");
+   	 				writer.append(my_rec.name+","+my_rec.description+","+sb.toString()+","+new_sb.toString()+"\n");
     				writer.close();
 
 				} catch (FileNotFoundException e) {
@@ -176,10 +181,12 @@ public class main {
 					}
 
 				} else if (user_command1.toLowerCase().equals("2")) {
-					System.out.println();
-
+					System.out.println(menu.size());
+					for(int i = 0; i < menu.size(); i++){
+						System.out.println(("name: " + menu.get(i).name));
+						System.out.println(("description: " + menu.get(i).description));
+					}
 					 //The Recipe Exploration feature goes here 
-
 				}
 
 				System.out.println("What would you like to do next?");
@@ -187,8 +194,22 @@ public class main {
 			}
 			
 			else if (user_command.toLowerCase().equals("read")) {
-				try {
-					FileInputStream fi = new FileInputStream("myRecipes.txt");
+				try{
+					File myFile = new File("myRecipes.txt");
+					Scanner myReader = new Scanner(myFile);
+					String data = "";
+					while(myReader.hasNextLine())	{
+						data += myReader.nextLine();
+						//System.out.print(data);
+					}
+					format(data);
+				}
+				catch (FileNotFoundException e){
+				}
+
+				//try {
+					//FileInputStream fi = new FileInputStream("myRecipes.txt");
+					/*
 					ObjectInputStream oi = new ObjectInputStream(fi);
 					boolean keepReading = true;
 					try {
@@ -214,9 +235,10 @@ public class main {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				*/
 			}
 			else if (user_command.toLowerCase().equals("exit")) {
-				System.out.println("\nGoodbye Chef!");
+				System.out.println("\nGoodbye");
 				break;
 			}
 		}
