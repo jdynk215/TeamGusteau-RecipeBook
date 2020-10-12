@@ -132,7 +132,7 @@ try {
 
 			else if (user_command.toLowerCase().equals("find")) {
 				System.out.println(
-						"\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all exsiting recipes:");
+						"\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all existing recipes:");
 				Scanner userInput1 = new Scanner(System.in);
 				String user_command1 = userInput1.nextLine();
 
@@ -144,7 +144,7 @@ try {
 					for (Recipe r : menu) {
 						if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
 							System.out.println(
-									"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by press the Enter key:");
+									"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
 
 							String user_command3 = userInput2.nextLine();
 							if (user_command3.toLowerCase().equals("1")) {
@@ -179,7 +179,7 @@ try {
 					for (Recipe r : menu) {
 						if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
 							System.out.println(
-									"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by press the Enter key:");
+									"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
 
 							String user_command3 = userInput2.nextLine();
 							if (user_command3.toLowerCase().equals("1")) {
