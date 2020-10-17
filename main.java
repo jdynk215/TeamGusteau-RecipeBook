@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 
 class Recipe {
     String name;
@@ -19,7 +20,34 @@ class Recipe {
         this.instructions = instructions;
     }
 
-    public void recipeRetrieval() {
+    public static void removeLine(String lineContent)
+    {
+        try{
+            File file = new File("myRecipes.txt");
+            File temp = new File("_temp_.txt");
+            PrintWriter out = new PrintWriter(new FileWriter(temp));
+            Files.lines(file.toPath())
+                .filter(line -> !line.contains(lineContent))
+                .forEach(out::println);
+            out.flush();
+            out.close();
+
+            FileReader fr=new FileReader("_temp_.txt");
+            FileWriter fw=new FileWriter("myRecipes.txt");
+            int c=fr.read();
+            while(c!=-1)
+            {
+                fw.write(c);
+                c = fr.read();
+            }
+            fr.close();
+            fw.close();
+            temp.delete();
+        }
+        catch (IOException e) {
+                    System.out.println("Error initializing stream");
+        }
+        
     }
 
     public void addRecipe() {
@@ -79,7 +107,7 @@ class Recipe {
 
 public class main {
     public static void main(String[] args) throws FileNotFoundException {
-
+try {
         Recipe my_rec;
         ArrayList<Recipe> menu = new ArrayList<Recipe>();
         BufferedReader br = new BufferedReader(new FileReader("myRecipes.txt"));
@@ -99,10 +127,8 @@ public class main {
                 my_rec.addRecipe();
                 menu.add(my_rec);
                 System.out.println("\n" + my_rec.toString());
-                System.out.println("What would you like to do next?");
                 try {
                     BufferedWriter writer = new BufferedWriter(new FileWriter("myRecipes.txt", true));
-
                     StringBuilder sb = new StringBuilder();
                     for (String s : my_rec.ingredients) {
                         sb.append(s);
@@ -112,7 +138,6 @@ public class main {
                             sb.append("#");
                         }
                     }
-
                     StringBuilder new_sb = new StringBuilder();
                     for (String x : my_rec.instructions) {
                         new_sb.append(x);
@@ -121,22 +146,21 @@ public class main {
                         } else {
                             new_sb.append("#");
                         }
-
                     }
                     writer.append(my_rec.name + "_" + my_rec.description + "_" + sb.toString() + "_" + new_sb.toString()
                             + "\n");
                     writer.close();
-
                 } catch (FileNotFoundException e) {
                     System.out.println("File not found");
                 } catch (IOException e) {
                     System.out.println("Error initializing stream");
                 }
+                System.out.println("What would you like to do next?");
             }
 
             else if (user_command.toLowerCase().equals("find")) {
                 System.out.println(
-                        "\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all exsiting recipes:");
+                        "\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all existing recipes:");
                 Scanner userInput1 = new Scanner(System.in);
                 String user_command1 = userInput1.nextLine();
 
@@ -147,22 +171,22 @@ public class main {
                     String user_command2 = userInput2.nextLine();
                     for (Recipe r : menu) {
                         if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
-                            System.out.println("\nRecipe found!\n Type 1 to see the whole recipe, or type 2 to view the recipe step by step by typing 'next'");
-                            
+                            System.out.println(
+                                    "\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
+
                             String user_command3 = userInput2.nextLine();
-                            if(user_command3.toLowerCase().equals("1")){
-                                System.out.println(r.toString());
-                            }
-                            else if(user_command3.toLowerCase().equals("2")){
-                                ArrayList <String> steps = new ArrayList <String>();
+                            if (user_command3.toLowerCase().equals("1")) {
+                                System.out.println("\n" +r.toString());
+                            } else if (user_command3.toLowerCase().equals("2")) {
+                                ArrayList<String> steps = new ArrayList<String>();
                                 steps = r.instructions;
-                                System.out.println(steps.remove(0));
-                                while (steps.size() > 0){
-                                    if(userInput2.nextLine().equals("next")){
+                                System.out.println("\n"+steps.remove(0));
+                                while (steps.size() > 0) {
+                                    if (userInput2.nextLine().toLowerCase().equals("")) {
                                         System.out.println(steps.remove(0));
                                     }
                                 }
-                                System.out.println("End of recipe");
+                                System.out.println("\nEnd of recipe\n");
                             }
                             Found = true;
 
@@ -177,7 +201,36 @@ public class main {
                     System.out.println();
                     printMenu(menu);
 
-                    // The Recipe Exploration feature goes here
+                    System.out.println("Please enter the recipe name:");
+                    Scanner userInput2 = new Scanner(System.in);
+                    String user_command2 = userInput2.nextLine();
+                    for (Recipe r : menu) {
+                        if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
+                            System.out.println(
+                                    "\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
+
+                            String user_command3 = userInput2.nextLine();
+                            if (user_command3.toLowerCase().equals("1")) {
+                                System.out.println("\n"+r.toString());
+                            } else if (user_command3.toLowerCase().equals("2")) {
+                                ArrayList<String> steps = new ArrayList<String>();
+                                steps = r.instructions;
+                                System.out.println("\n" + steps.remove(0));
+                                while (steps.size() > 0) {
+                                    if (userInput2.nextLine().toLowerCase().equals("")) {
+                                        System.out.println(steps.remove(0));
+                                    }
+                                }
+                                System.out.println("\nEnd of recipe\n");
+                            }
+                            Found = true;
+
+                            break;
+                        }
+                    }
+                    if (!Found) {
+                        System.out.println("\nSorry recipe wasn't found...\n");
+                    }
 
                 }
 
@@ -185,93 +238,104 @@ public class main {
 
             }
 
-            else if (user_command.toLowerCase().equals("read")) {
-                try {
-                    FileInputStream fi = new FileInputStream("myRecipes.txt");
-                    ObjectInputStream oi = new ObjectInputStream(fi);
-                    boolean keepReading = true;
-                    try {
-                        while (keepReading) {
-                            Recipe read_rec = (Recipe) oi.readObject();
-                            System.out.println(read_rec.toString());
-                            menu.add(read_rec);
-                            System.out.println("What would you like to do next?");
+//          else if (user_command.toLowerCase().equals("read")) {
+//              try {
+//                  FileInputStream fi = new FileInputStream("myRecipes.txt");
+//                  ObjectInputStream oi = new ObjectInputStream(fi);
+//                  boolean keepReading = true;
+//                  try {
+//                      while (keepReading) {
+//                          Recipe read_rec = (Recipe) oi.readObject();
+//                          System.out.println(read_rec.toString());
+//                          menu.add(read_rec);
+//                          System.out.println("What would you like to do next?");
+//                      }
+//                  } catch (EOFException e) {
+//                      keepReading = false;
+//                  }
+//                  oi.close();
+//                  fi.close();
+//              } catch (FileNotFoundException e) {
+//                  System.out.println("File not found");
+//              } catch (IOException e) {
+//                  System.out.println("Error initializing stream");
+//              } catch (ClassNotFoundException e) { // TODO Auto-generated catch block
+//                  e.printStackTrace();
+//              }
+//          }
 
-                        }
-                    } catch (EOFException e) {
-                        keepReading = false;
+            else if (user_command.toLowerCase().equals("delete")) {
+                boolean Found = false;
+                System.out.println("\nPlease type the name of the recipe you want to delete.");
+                Scanner userInput2 = new Scanner(System.in);
+                String user_command2 = userInput2.nextLine();
+                for (Recipe r : menu) {
+                    if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
+                        
+                        Recipe.removeLine(user_command2);
+                        menu.remove(r);
+                        System.out.println("\nRecipe found and deleted!\n");
+                        Found = true;
+                        break;
                     }
-
-                    oi.close();
-                    fi.close();
-
-                } catch (FileNotFoundException e) {
-                    System.out.println("File not found");
-                } catch (IOException e) {
-                    System.out.println("Error initializing stream");
-                } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
-            } else if (user_command.toLowerCase().equals("help")) {
-                System.out.println("Here is a list of our commands:");
-                System.out.println("create");
-                System.out.println("\t Add a recipe to your recipe book by inputting a title, description, incredients, and instructions");
-                System.out.println("find");
-                System.out.println("\t Explore the recipe book either through searching (1) or through a display of the entire recipe book (2)");
-                System.out.println("read");
-                System.out.println("\t Read an existing recipe book at myRecipes.txt into the program");
+                if (!Found) {
+                    System.out.println("\nSorry recipe wasn't found...\n");
+                }
 
-                System.out.println("\n What would you like to do next?");
+            } else if (user_command.toLowerCase().equals("help")) {
+                System.out.println("\nHere is a list of our commands:\n");
+                System.out.println("create");
+                System.out.println(
+                        "\tAdd a recipe to your recipe book by inputting a title, description, incredients, and instructions");
+                System.out.println("find");
+                System.out.println(
+                        "\tExplore the recipe book either through searching (1) or through a display of the entire recipe book (2)"
+                                + "\n\tAfter a recipe is selected, you can either read the entire recipe (1) or step through the instructions one at a time (2)");
+                System.out.println("exit");
+                System.out.println("\tExit Team Gusteau Recipe Application");
+
+                System.out.println("\nWhat would you like to do next?");
 
             } else if (user_command.toLowerCase().equals("exit")) {
                 System.out.println("\nGoodbye Chef!");
                 break;
+            } else {
+                System.out.println(
+                        "\nCommand not found. If you have any issues, try typing HELP for a list of commands!");
+                System.out.println("\nWhat would you like to do next?");
             }
-            else{
-                System.out.println("\nCommand not found. If you have any issues, try typing HELP for a list of commands!");
-                System.out.println("\n What would you like to do next?");
-            }
+        }} catch (FileNotFoundException e) {
+            System.out.println("\nLocal myRecipes.txt file wasn't found!\n"
+                    + "\nPlease download one from https://github.com/jdynk215/TeamGusteau-RecipeBook\n"
+                    + "\n,then place it under the same folder of this program before starting.\n"
+                    + "\nLooking forward to seeing you soon.");
         }
-
     }
 
     public static void readRecipeFile(ArrayList<Recipe> menu, BufferedReader br) {
         try {
-
             String st;
-
             while ((st = br.readLine()) != null) {
-                // System.out.println(st);
                 String[] splitline = st.split("_");
-//          for (int i=0;i<4;i++) {
-//              System.out.println(splitline[i]);
-//          }
                 String[] ingred = splitline[2].split("#");
-
                 String[] instruc = splitline[3].split("#");
-//              for (int i=0;i<ingred.length;i++) {
-//                  System.out.println(ingred[i]);
-//              }
                 Recipe temp = new Recipe();
                 temp.name = splitline[0];
                 temp.description = splitline[1];
-
                 for (String s : ingred) {
                     temp.ingredients.add(s);
                 }
                 for (String q : instruc) {
                     temp.instructions.add(q);
                 }
-
                 menu.add(temp);
-
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("Local menu loaded...\n");
+        System.out.println("\nLocal menu loaded...\n");
     }
 
     public static void printMenu(ArrayList<Recipe> r) {
@@ -280,8 +344,6 @@ public class main {
             sb.append(s.name);
             sb.append("\n");
         }
-
         System.out.println(sb.toString());
-
     }
 }
