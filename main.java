@@ -282,6 +282,7 @@ try {
                 if (!Found) {
                     System.out.println("\nSorry recipe wasn't found...\n");
                 }
+                System.out.println("What would you like to do next?");
 
             } else if (user_command.toLowerCase().equals("help")) {
                 System.out.println("\nHere is a list of our commands:\n");
