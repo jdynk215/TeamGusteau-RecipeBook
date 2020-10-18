@@ -293,8 +293,11 @@ try {
                 System.out.println(
                         "\tExplore the recipe book either through searching (1) or through a display of the entire recipe book (2)"
                                 + "\n\tAfter a recipe is selected, you can either read the entire recipe (1) or step through the instructions one at a time (2)");
+                System.out.println("delete");
+                System.out.println("\tRemove a selected recipe from your recipe book. Note that input is case and punctuation sensitive");
                 System.out.println("exit");
                 System.out.println("\tExit Team Gusteau Recipe Application");
+
 
                 System.out.println("\nWhat would you like to do next?");
 
