@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 
 class Recipe {
 	String name;
@@ -21,6 +22,35 @@ class Recipe {
 
 	public void recipeRetrieval() {
 	}
+  public static void removeLine(String lineContent)
+    {
+        try{
+            File file = new File("myRecipes.txt");
+            File temp = new File("_temp_.txt");
+            PrintWriter out = new PrintWriter(new FileWriter(temp));
+            Files.lines(file.toPath())
+                .filter(line -> !line.contains(lineContent))
+                .forEach(out::println);
+            out.flush();
+            out.close();
+
+            FileReader fr=new FileReader("_temp_.txt");
+            FileWriter fw=new FileWriter("myRecipes.txt");
+            int c=fr.read();
+            while(c!=-1)
+            {
+                fw.write(c);
+                c = fr.read();
+            }
+            fr.close();
+            fw.close();
+            temp.delete();
+        }
+        catch (IOException e) {
+                    System.out.println("Error initializing stream");
+        }
+        
+    }
 
 	public boolean addRecipe(ArrayList<Recipe> menu) {
 		Scanner input_recipe = new Scanner(System.in);
@@ -302,7 +332,27 @@ public class main {
 //				}
 //			}
 
-				else if (user_command.toLowerCase().equals("help")) {
+				else if (user_command.toLowerCase().equals("delete")) {
+                boolean Found = false;
+                System.out.println("\nPlease type the name of the recipe you want to delete.");
+                Scanner userInput2 = new Scanner(System.in);
+                String user_command2 = userInput2.nextLine();
+                for (Recipe r : menu) {
+                    if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
+                        
+                        Recipe.removeLine(user_command2);
+                        menu.remove(r);
+                        System.out.println("\nRecipe found and deleted!\n");
+                        Found = true;
+                        break;
+                    }
+                }
+                if (!Found) {
+                    System.out.println("\nSorry recipe wasn't found...\n");
+                }
+                System.out.println("What would you like to do next?");
+
+            }else if (user_command.toLowerCase().equals("help")) {
 					System.out.println("\nHere is a list of our commands:\n");
 					System.out.println("create");
 					System.out.println(
@@ -311,7 +361,9 @@ public class main {
 					System.out.println(
 							"\tExplore the recipe book either through searching (1) or through a display of the entire recipe book (2)"
 									+ "\n\tAfter a recipe is selected, you can either read the entire recipe (1) or step through the instructions one at a time (2)");
-					System.out.println("exit");
+					System.out.println("delete");
+                System.out.println("\tRemove a selected recipe from your recipe book. Note that input is case and punctuation sensitive");
+          System.out.println("exit");
 					System.out.println("\tExit Team Gusteau Recipe Application");
 
 					System.out.println("\nWhat would you like to do next?");
