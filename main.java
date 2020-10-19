@@ -172,10 +172,10 @@ class Recipe {
 }
 
 public class main {
+  public static ArrayList<Recipe> menu = new ArrayList<Recipe>();
 	public static void main(String[] args) throws FileNotFoundException {
 		try {
 			Recipe my_rec;
-			ArrayList<Recipe> menu = new ArrayList<Recipe>();
 			BufferedReader br = new BufferedReader(new FileReader("myRecipes.txt"));
 			readRecipeFile(menu, br);
 
@@ -234,9 +234,13 @@ public class main {
 
 					boolean Found = false;
 					if (user_command1.toLowerCase().equals("1")) {
-						System.out.println("\nPlease enter the recipe name:");
-						Scanner userInput2 = new Scanner(System.in);
-						String user_command2 = userInput2.nextLine();
+            System.out.println("\nPlease enter the recipe name:");
+					  Scanner userInput2 = new Scanner(System.in);
+					  String user_command2 = userInput2.nextLine();
+
+            //use fuzzy search algorithm to update user input to an actual recipe title
+            user_command2 = getBestMatchForUserInput(user_command2.toLowerCase());
+            
 						for (Recipe r : menu) {
 							if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
 								System.out.println(
@@ -418,4 +422,50 @@ public class main {
 		}
 		System.out.println(sb.toString());
 	}
+  
+    //Fuzzy search implementation below inpired by:
+    //https: //www.codeproject.com/Articles/147230/Simple-Fuzzy-String-Similarity-in-Java
+   
+    public static List<char[]> getBigramFromString(String str){
+        List<char[]> bigram = new ArrayList<char[]>();
+        for(int i = 0; i < str.length() - 1; i++){
+            char[] chars = new char[2];
+            chars[0] = str.charAt(i);
+            chars[1] = str.charAt(i + 1);
+            bigram.add(chars);
+        }
+        return bigram;
+    }
+
+    public static double diceFuzzyScore(List<char[]> bigram1, List<char[]> bigram2){
+        List<char[]> copy = new ArrayList<char[]>(bigram2);
+        int totalMatches = 0;
+        for(int i = 0; i < bigram1.size(); i++){
+            char[] bigram = bigram1.get(i);
+            for(int j = 0; j < copy.size(); j++){
+                char[] toMatch = copy.get(j);
+                if(bigram[0] == toMatch[0] && bigram[1] == toMatch[1]){
+                    copy.remove(j);
+                    totalMatches++; 
+                    break;
+                }
+            }
+        } 
+        return (double) (totalMatches * 2) / (bigram1.size() + bigram2.size());
+    }
+
+    public static String getBestMatchForUserInput(String userInput){
+    
+        double bestScore = 0;
+        int bestInd = -1;
+        List<char[]> userBigram = getBigramFromString(userInput);
+        for(int i = 0; i < menu.size(); i++){
+            double currScore = diceFuzzyScore(userBigram, getBigramFromString(menu.get(i).name.toLowerCase()));
+            if(currScore >= bestScore){
+                bestScore = currScore;
+                bestInd = i;
+            }
+        }
+        return bestScore > 0.4 ? menu.get(bestInd).name : "";
+    }
 }
