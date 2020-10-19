@@ -348,6 +348,6 @@ try {
                 bestInd = i;
             }
         }
-        return bestScore > 0.5 ? menu.get(bestInd).name : "";
+        return bestScore > 0.4 ? menu.get(bestInd).name : "";
     }
 }
