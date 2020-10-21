@@ -60,7 +60,7 @@ class Recipe {
 			System.out.println("\nWhat would you like to do next?");
 			return false;
 		}
-		String testname = input_recipe.nextLine();
+		String testname = input_recipe.nextLine().trim();
 		// System.out.println(testname);
 		for (Recipe r : menu) {
 			// System.out.println("what?");
@@ -82,7 +82,7 @@ class Recipe {
 		this.description = input_recipe.nextLine();
 
 		System.out.println("\nEnter the number of ingredients you would like to add");
-		String testnum = input_recipe.nextLine();
+		String testnum = input_recipe.nextLine().trim();
 		if (!testnum.matches("[0-9]+")) {
 			System.out.println("\nYou can only input integers greater than 0, please try again.");
 			System.out.println("\nWhat would you like to do next?");
@@ -111,7 +111,7 @@ class Recipe {
 		}
 
 		System.out.println("\nEnter the number of instructions you would like to add");
-		String testnum2 = input_recipe.nextLine();
+		String testnum2 = input_recipe.nextLine().trim();
 		if (!testnum2.matches("[0-9]+")) {
 			System.out.println("\nYou can only input Integers greater than 0, please try again.");
 			System.out.println("\nWhat would you like to do next?");
@@ -185,7 +185,7 @@ public class main {
 			String user_command;
 
 			while (true) {
-				user_command = userInput.nextLine();
+				user_command = userInput.nextLine().trim();
 				if (user_command.toLowerCase().equals("create")) {
 					System.out.println(
 							"\nLet's make a new recipe! You'll be prompted to enter several components of your recipe, please hit enter after each entry:");
@@ -230,13 +230,13 @@ public class main {
 					System.out.println(
 							"\nLooking for a recipe? Enter 1 to search for a recipe by name, or enter 2 to browse all existing recipes:");
 					Scanner userInput1 = new Scanner(System.in);
-					String user_command1 = userInput1.nextLine();
+					String user_command1 = userInput1.nextLine().trim();
 
 					boolean Found = false;
 					if (user_command1.toLowerCase().equals("1")) {
             System.out.println("\nPlease enter the recipe name:");
 					  Scanner userInput2 = new Scanner(System.in);
-					  String user_command2 = userInput2.nextLine();
+					  String user_command2 = userInput2.nextLine().trim();
 
             //use fuzzy search algorithm to update user input to an actual recipe title
             user_command2 = getBestMatchForUserInput(user_command2.toLowerCase());
@@ -275,7 +275,7 @@ public class main {
 
 						System.out.println("Please enter the recipe name:");
 						Scanner userInput2 = new Scanner(System.in);
-						String user_command2 = userInput2.nextLine();
+						String user_command2 = userInput2.nextLine().trim();
 						for (Recipe r : menu) {
 							if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
 								System.out.println(
@@ -340,7 +340,7 @@ public class main {
                 boolean Found = false;
                 System.out.println("\nPlease type the name of the recipe you want to delete.");
                 Scanner userInput2 = new Scanner(System.in);
-                String user_command2 = userInput2.nextLine();
+                String user_command2 = userInput2.nextLine().trim();
                 for (Recipe r : menu) {
                     if (r.name.toLowerCase().equals(user_command2.toLowerCase())) {
                         
