@@ -246,7 +246,7 @@ public class main {
 								System.out.println(
 										"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
 
-								String user_command3 = userInput2.nextLine();
+								String user_command3 = userInput2.nextLine().trim();
 								if (user_command3.toLowerCase().equals("1")) {
 									System.out.println("\n" + r.toString());
 								} else if (user_command3.toLowerCase().equals("2")) {
@@ -281,7 +281,7 @@ public class main {
 								System.out.println(
 										"\nRecipe found!\nType 1 to see the whole recipe, or type 2 to view the recipe step by step by pressing the Enter key:");
 
-								String user_command3 = userInput2.nextLine();
+								String user_command3 = userInput2.nextLine().trim();
 								if (user_command3.toLowerCase().equals("1")) {
 									System.out.println("\n" + r.toString());
 								} else if (user_command3.toLowerCase().equals("2")) {
